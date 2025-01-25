@@ -11,80 +11,44 @@ import Container from "@mui/material/Container";
 import Button from "@mui/material/Button";
 import MenuItem from "@mui/material/MenuItem";
 import ShoppingBagIcon from "@mui/icons-material/ShoppingBag";
-import { getAuth,onAuthStateChanged } from "firebase/auth";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { logout } from "../firebase";
 
 function Navbar() {
   const navigate = useNavigate();
   const [auth, setAuth] = useState(false);
   const [anchorElNav, setAnchorElNav] = useState(null);
-  const [anchorElUser, setAnchorElUser] = useState(null);
 
   useEffect(() => {
-    const auth = getAuth();
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setAuth(user ? true : false);
+    const authInstance = getAuth();
+    const unsubscribe = onAuthStateChanged(authInstance, (user) => {
+      setAuth(!!user);
     });
     return () => unsubscribe();
   }, []);
 
-  const handleOpenNavMenu = (event) => {
-    setAnchorElNav(event.currentTarget);
-  };
+  const handleOpenNavMenu = (event) => setAnchorElNav(event.currentTarget);
+  const handleCloseNavMenu = () => setAnchorElNav(null);
 
-  const handleOpenUserMenu = (event) => {
-    setAnchorElUser(event.currentTarget);
-  };
-
-  const handleCloseNavMenu = () => {
+  const handleNavigate = (path) => {
     setAnchorElNav(null);
+    navigate(path);
   };
 
-  const handleElectronics = () => {
-    setAnchorElUser(null);
-    navigate("/electronics");
-  };
-
-  const handleClothes = () => {
-    setAnchorElUser(null);
-    navigate("/clothes");
-  };
-
-  const handleShoes = () => {
-    setAnchorElUser(null);
-    navigate("/shoes");
-  };
-  const handleFurnitures = () => {
-    setAnchorElUser(null);
-    navigate("/furnitures");
-  };
   const handleLogout = () => {
-    setAnchorElUser(null);
     logout();
-  };
-
-  const handleTitle = () => {
-    setAnchorElUser(null);
-    navigate("/");
-  };
-
-  const handleCloseUserMenu = () => {
-    setAnchorElUser(null);
+    navigate("/login");
   };
 
   return (
     <AppBar position="static">
       <Container maxWidth="xl">
         <Toolbar disableGutters>
-          <ShoppingBagIcon
-            sx={{ display: { xs: "none", md: "flex" }, mr: 1 }}
-          />
+          <ShoppingBagIcon sx={{ display: { xs: "none", md: "flex" }, mr: 1 }} />
           <Typography
             variant="h6"
             noWrap
-            component="a"
-            onClick={handleTitle}
-            href="#"
+            onClick={() => navigate("/")}
             sx={{
               mr: 2,
               display: { xs: "none", md: "flex" },
@@ -93,6 +57,7 @@ function Navbar() {
               letterSpacing: ".3rem",
               color: "inherit",
               textDecoration: "none",
+              cursor: "pointer",
             }}
           >
             SHOPPI
@@ -101,7 +66,7 @@ function Navbar() {
           <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
             <IconButton
               size="large"
-              aria-label="account of current user"
+              aria-label="menu"
               aria-controls="menu-appbar"
               aria-haspopup="true"
               onClick={handleOpenNavMenu}
@@ -112,83 +77,60 @@ function Navbar() {
             <Menu
               id="menu-appbar"
               anchorEl={anchorElNav}
-              anchorOrigin={{
-                vertical: "bottom",
-                horizontal: "left",
-              }}
+              anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
               keepMounted
-              transformOrigin={{
-                vertical: "top",
-                horizontal: "left",
-              }}
+              transformOrigin={{ vertical: "top", horizontal: "left" }}
               open={Boolean(anchorElNav)}
               onClose={handleCloseNavMenu}
               sx={{ display: { xs: "block", md: "none" } }}
             >
-              <MenuItem onClick={handleClothes}>
-                <Typography sx={{ textAlign: "center" }}>Clothes</Typography>
-              </MenuItem>
-              <MenuItem onClick={handleElectronics}>
-                <Typography sx={{ textAlign: "center" }}>
-                  Electronics
-                </Typography>
-              </MenuItem>
-              <MenuItem onClick={handleFurnitures}>
-                <Typography sx={{ textAlign: "center" }}>Furnitures</Typography>
-              </MenuItem>
-              <MenuItem onClick={handleShoes}>
-                <Typography sx={{ textAlign: "center" }}>Shoes</Typography>
-              </MenuItem>
+              {["/clothes", "/electronics", "/furnitures", "/shoes"].map(
+                (path, index) => (
+                  <MenuItem
+                    key={index}
+                    onClick={() => handleNavigate(path)}
+                  >
+                    <Typography textAlign="center">
+                      {path.replace("/", "").charAt(0).toUpperCase() +
+                        path.slice(2)}
+                    </Typography>
+                  </MenuItem>
+                )
+              )}
             </Menu>
           </Box>
-          <ShoppingBagIcon
-            sx={{ display: { xs: "flex", md: "none" }, mr: 1 }}
-          />
+
+          <ShoppingBagIcon sx={{ display: { xs: "flex", md: "none" }, mr: 1 }} />
           <Typography
             variant="h5"
             noWrap
-            component="a"
-            href="#"
-            onClick={handleTitle}
+            onClick={() => navigate("/")}
             sx={{
-              mr: 2,
-              display: { xs: "flex", md: "none" },
               flexGrow: 1,
+              display: { xs: "flex", md: "none" },
               fontFamily: "monospace",
               fontWeight: 700,
               letterSpacing: ".3rem",
               color: "inherit",
               textDecoration: "none",
+              cursor: "pointer",
             }}
           >
             SHOPPI
           </Typography>
+
           <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
-            <Button
-              onClick={handleClothes}
-              sx={{ my: 2, color: "white", display: "block" }}
-            >
-              Cloths
-            </Button>
-            <Button
-              onClick={handleElectronics}
-              sx={{ my: 2, color: "white", display: "block" }}
-            >
-              Electronic
-            </Button>
-            <Button
-              onClick={handleFurnitures}
-              sx={{ my: 2, color: "white", display: "block" }}
-            >
-              Furniture
-            </Button>
-            <Button
-              onClick={handleShoes}
-              sx={{ my: 2, color: "white", display: "block" }}
-            >
-              Shoes
-            </Button>
+            {["Clothes", "Electronics", "Furnitures", "Shoes"].map((item, idx) => (
+              <Button
+                key={idx}
+                onClick={() => handleNavigate(`/${item.toLowerCase()}`)}
+                sx={{ my: 2, color: "white", display: "block" }}
+              >
+                {item}
+              </Button>
+            ))}
           </Box>
+
           <Box sx={{ flexGrow: 0 }}>
             <Button
               onClick={auth ? handleLogout : () => navigate("/login")}

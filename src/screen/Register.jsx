@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Container, Paper, Typography, TextField, Button } from "@mui/material";
+import { Container, Paper, Typography, TextField, Button, Alert } from "@mui/material";
 import { Link } from "react-router-dom";
 import { signUp } from "../firebase";
 
@@ -11,6 +11,20 @@ function Register() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
+  const validateName = (name) => {
+    const nameRegex = /^[A-Za-z\s]{3,}$/;
+    return nameRegex.test(name);
+  };
+
+  const validateEmail = (email) => {
+    const emailRegex = /^[^\d][\w.%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/; 
+    return emailRegex.test(email);
+  };
+
+  const validatePassword = (password) => {
+    return password.length >= 6;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
@@ -18,11 +32,33 @@ function Register() {
 
     if (!name || !email || !password || !confirmPassword) {
       setError("All fields are required.");
+      setTimeout(() => setError(""), 2000)
+      return;
+    }
+
+    if (!validateName(name)) {
+      setError(
+        "Name must be at least 3 letters long and cannot contain numbers."
+      );
+      setTimeout(() => setError(""), 2000)
+      return;
+    }
+
+    if (!validateEmail(email)) {
+      setError("Email must not start with a number and must be valid.");
+      setTimeout(() => setError(""), 2000)
+      return;
+    }
+
+    if (!validatePassword(password)) {
+      setError("Password must be at least 6 characters long.");
+      setTimeout(() => setError(""), 2000)
       return;
     }
 
     if (password !== confirmPassword) {
       setError("Passwords do not match.");
+      setTimeout(() => setError(""), 2000)
       return;
     }
 
@@ -35,6 +71,7 @@ function Register() {
       setConfirmPassword("");
     } catch (error) {
       setError("Failed to register. Please try again.");
+      setTimeout(() => setError(""), 2000)
     }
   };
 
@@ -60,6 +97,17 @@ function Register() {
         <Typography variant="h5" gutterBottom>
           Register
         </Typography>
+
+        {error && (
+          <Alert severity="error" sx={{ marginBottom: 2 }}>
+            {error}
+          </Alert>
+        )}
+        {success && (
+          <Typography variant="body2" color="success" gutterBottom>
+            {success}
+          </Typography>
+        )}
 
         <form onSubmit={handleSubmit}>
           <TextField
@@ -103,7 +151,7 @@ function Register() {
             Register
           </Button>
           <Typography>
-            Existing User ?
+            Existing User ?{" "}
             <Link
               to={"/login"}
               style={{

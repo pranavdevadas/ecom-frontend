@@ -21,6 +21,7 @@ function Login() {
 
     if (!email || !password) {
       setError("Both fields are required.");
+      setTimeout(() => setError(""), 2000)
       return;
     }
 
@@ -28,6 +29,7 @@ function Login() {
       await login(email, password);
     } catch (err) {
       setError("Failed to login. Please check your credentials.");
+      setTimeout(() => setError(""), 2000)
     }
   };
 
@@ -86,7 +88,7 @@ function Login() {
             Login
           </Button>
         <Typography>
-          New User ?{" "}
+          New User ?
           <Link
             to={"/register"}
             style={{
