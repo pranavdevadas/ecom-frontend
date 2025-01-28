@@ -44,7 +44,9 @@ function Navbar() {
     <AppBar position="static">
       <Container maxWidth="xl">
         <Toolbar disableGutters>
-          <ShoppingBagIcon sx={{ display: { xs: "none", md: "flex" }, mr: 1 }} />
+          <ShoppingBagIcon
+            sx={{ display: { xs: "none", md: "flex" }, mr: 1 }}
+          />
           <Typography
             variant="h6"
             noWrap
@@ -86,10 +88,7 @@ function Navbar() {
             >
               {["/clothes", "/electronics", "/furnitures", "/shoes"].map(
                 (path, index) => (
-                  <MenuItem
-                    key={index}
-                    onClick={() => handleNavigate(path)}
-                  >
+                  <MenuItem key={index} onClick={() => handleNavigate(path)}>
                     <Typography textAlign="center">
                       {path.replace("/", "").charAt(0).toUpperCase() +
                         path.slice(2)}
@@ -100,7 +99,9 @@ function Navbar() {
             </Menu>
           </Box>
 
-          <ShoppingBagIcon sx={{ display: { xs: "flex", md: "none" }, mr: 1 }} />
+          <ShoppingBagIcon
+            sx={{ display: { xs: "flex", md: "none" }, mr: 1 }}
+          />
           <Typography
             variant="h5"
             noWrap
@@ -120,15 +121,17 @@ function Navbar() {
           </Typography>
 
           <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
-            {["Clothes", "Electronics", "Furnitures", "Shoes"].map((item, idx) => (
-              <Button
-                key={idx}
-                onClick={() => handleNavigate(`/${item.toLowerCase()}`)}
-                sx={{ my: 2, color: "white", display: "block" }}
-              >
-                {item}
-              </Button>
-            ))}
+            {["Clothes", "Electronics", "Furnitures", "Shoes"].map(
+              (item, idx) => (
+                <Button
+                  key={idx}
+                  onClick={() => handleNavigate(`/${item.toLowerCase()}`)}
+                  sx={{ my: 2, color: "white", display: "block" }}
+                >
+                  {item}
+                </Button>
+              )
+            )}
           </Box>
 
           <Box sx={{ flexGrow: 0 }}>
