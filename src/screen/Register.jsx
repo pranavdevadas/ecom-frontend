@@ -9,7 +9,6 @@ function Register() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
 
   const validateName = (name) => {
     const nameRegex = /^[A-Za-z\s]{3,}$/;
@@ -28,7 +27,6 @@ function Register() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
-    setSuccess("");
 
     if (!name || !email || !password || !confirmPassword) {
       setError("All fields are required.");
@@ -64,7 +62,6 @@ function Register() {
 
     try {
       await signUp(name, email, password);
-      setSuccess("Registration successful!");
       setName("");
       setEmail("");
       setPassword("");
@@ -102,11 +99,6 @@ function Register() {
           <Alert severity="error" sx={{ marginBottom: 2 }}>
             {error}
           </Alert>
-        )}
-        {success && (
-          <Typography variant="body2" color="success" gutterBottom>
-            {success}
-          </Typography>
         )}
 
         <form onSubmit={handleSubmit}>
